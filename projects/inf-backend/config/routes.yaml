@@ -8,13 +8,17 @@
 #   bin/console debug:router
 
 controllers:
-    resource: routing.controllers
+    resource: ../src/Controller/
+    type: attribute
 
-
-
-
-lucky_number:
-    path: /lucky/number
-    controller: App\Controller\LuckyController::number
-    defaults:
-        title: 'Lucky Number'
+# stara wersja jak nie uzywasz atrybutów #[Route]
+#homepage:
+#    path: /
+#    controller: App\Controller\MainPageController::index
+#
+#
+#lucky_number:
+#    path: /lucky/number
+#    controller: App\Controller\LuckyController::number
+#    defaults:
+#        title: 'Lucky Number'
