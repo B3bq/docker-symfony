@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Quiz: {{ survey.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 bg-light mb-5">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h4 mb-0">{{ survey.title }}</h2>
+                </div>
+                <div class="card-body p-4">
+                    {% if survey.description %}
+                        <p class="text-secondary fs-5">{{ survey.description }}</p>
+                        <hr class="mb-4">
+                    {% endif %}
+
+                    {% if score is not null %}
+                        <div class="alert alert-success text-center p-5 rounded-3">
+                            <h3 class="mb-3">Quiz zakończony!</h3>
+                            <h4 class="display-6 fw-bold text-success mb-3">Twój wynik: {{ score }} / {{ maxScore }}</h4>
+                            <p class="fs-5">To <strong>{{ (score / maxScore * 100)|round }}%</strong> poprawnych odpowiedzi!</p>
+                        </div>
+                        <a href="{{ path('homepage') }}" class="btn btn-outline-primary btn-lg w-100 mt-2">Wróć na stronę główną</a>
+                    {% else %}
+                        <form method="POST">
+                            {% for question in survey.questions %}
+                                <div class="card mb-4 border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title fw-bold mb-4">{{ loop.index }}. {{ question.content }}</h5>
+                                        
+                                        <div class="answers-group">
+                                            {% for answer in question.answers %}
+                                                <div class="form-check mb-3">
+                                                    <input class="form-check-input" style="transform: scale(1.2);" type="radio" name="question_{{ question.id }}" id="answer_{{ answer.id }}" value="{{ answer.id }}" required>
+                                                    <label class="form-check-label ms-2 fs-5" for="answer_{{ answer.id }}" style="cursor: pointer;">
+                                                        {{ answer.content }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3 fw-bold">Zakończ i sprawdź swój wynik</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

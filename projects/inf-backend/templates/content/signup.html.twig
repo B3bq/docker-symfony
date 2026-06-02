@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block navigation %}
+    <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+    <li><a href="{{ path('signin') }}">Zaloguj się</a></li>
+    <li><a href="{{ path('signup') }}">Zarejestruj się</a></li>
+{% endblock %}
+
+{% block content %}
+    <h2>Zarejestruj się</h2>
+
+    <form action="" method="post">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Zarejestruj się</button>
+    </form>
+{% endblock %}

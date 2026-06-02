@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+
+{% block navigation %}
+    {% if user == true %}
+        <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+        <li><a href="">Wyloguj się</a></li>
+    {% else %}
+        <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+        <li><a href="{{ path('signin') }}">Zaloguj się</a></li>
+        <li><a href="{{ path('signup') }}">Zarejestruj się</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Witaj na stronie głównej ankiet!</h2>
+            {% if user == true %}
+                <a href="{{ path('survey_create') }}" class="btn btn-success">+ Stwórz nowy quiz</a>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            {% for survey in content %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="card-title h5">{{ survey.title }}</h3>
+                            <p class="card-text text-muted">{{ survey.description }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="{{ path('survey_answer', {'id': survey.id}) }}" class="btn btn-primary w-100">Rozwiąż quiz</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <p class="text-muted">Brak dostępnych quizów. Stwórz pierwszy!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
