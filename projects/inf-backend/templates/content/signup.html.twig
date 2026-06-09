@@ -7,18 +7,31 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Zarejestruj się</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="mb-4 text-center">Załóż konto</h2>
 
-    <form action="" method="post">
-        <label for="username">Nazwa użytkownika:</label>
-        <input type="text" id="username" name="username" required>
+                    {{ form_start(registrationForm) }}
+                        {{ form_errors(registrationForm) }}
+                        <div class="mb-3">
+                            {{ form_row(registrationForm.email, {'label_attr': {'class': 'fw-bold'}}) }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_row(registrationForm.plainPassword.first, {'label_attr': {'class': 'fw-bold'}}) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_row(registrationForm.plainPassword.second, {'label_attr': {'class': 'fw-bold'}}) }}
+                        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="password">Hasło:</label>
-        <input type="password" id="password" name="password" required>
-
-        <button type="submit">Zarejestruj się</button>
-    </form>
+                        <button type="submit" class="btn btn-success w-100 mb-3 py-2 fw-bold">Zarejestruj się</button>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

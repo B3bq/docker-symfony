@@ -7,15 +7,31 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Zaloguj się</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="mb-4 text-center">Zaloguj się</h2>
+                    
+                    {{ form_start(loginForm, {'action': path('signin')}) }}
+                        {{ form_errors(loginForm) }}
 
-    <form action="{{ path('homepage', {'user': true}) }}" method="post">
-        <label for="username">Nazwa użytkownika:</label>
-        <input type="text" id="username" name="username" required>
+                        <div class="mb-3">
+                            {{ form_row(loginForm.email, {'label_attr': {'class': 'fw-bold'}}) }}
+                        </div>
+                        
+                        <div class="mb-4">
+                            {{ form_row(loginForm.password, {'label_attr': {'class': 'fw-bold'}}) }}
+                        </div>
 
-        <label for="password">Hasło:</label>
-        <input type="password" id="password" name="password" required>
-
-        <button type="submit">Zaloguj się</button>
-    </form>
+                        <button class="btn btn-primary w-100 mb-3 py-2 fw-bold" type="submit">
+                            Zaloguj się
+                        </button>
+                    {{ form_end(loginForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

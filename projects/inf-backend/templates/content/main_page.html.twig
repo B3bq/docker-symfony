@@ -2,9 +2,9 @@
 
 
 {% block navigation %}
-    {% if user == true %}
+    {% if app.user %}
         <li><a href="{{ path('homepage') }}">Strona główna</a></li>
-        <li><a href="">Wyloguj się</a></li>
+        <li><a href="{{ path('app_logout') }}">Wyloguj się ({{ app.user.email }})</a></li>
     {% else %}
         <li><a href="{{ path('homepage') }}">Strona główna</a></li>
         <li><a href="{{ path('signin') }}">Zaloguj się</a></li>
@@ -16,7 +16,7 @@
     <div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Witaj na stronie głównej ankiet!</h2>
-            {% if user == true %}
+            {% if app.user %}
                 <a href="{{ path('survey_create') }}" class="btn btn-success">+ Stwórz nowy quiz</a>
             {% endif %}
         </div>
