@@ -24,6 +24,9 @@ class Survey
     #[ORM\OneToMany(mappedBy: 'survey', targetEntity: Question::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $questions;
 
+    #[ORM\Column]
+    private ?int $user_id = null;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -77,6 +80,18 @@ class Survey
                 $question->setSurvey(null);
             }
         }
+        return $this;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(int $user_id): static
+    {
+        $this->user_id = $user_id;
+
         return $this;
     }
 }
