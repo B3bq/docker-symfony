@@ -22,7 +22,9 @@
         </div>
 
         <div class="row">
+            <ol>
             {% for survey in content %}
+                <li>
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
@@ -39,11 +41,13 @@
                         {% endif %}
                     </div>
                 </div>
+                </li>
             {% else %}
                 <div class="col-12">
                     <p class="text-muted">Brak dostępnych quizów. Stwórz pierwszy!</p>
                 </div>
             {% endfor %}
+            </ol>
         </div>
     </div>
 {% endblock %}

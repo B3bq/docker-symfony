@@ -25,7 +25,7 @@ class Survey
     private Collection $questions;
 
     #[ORM\Column]
-    private ?int $user_id = null;
+    public ?int $user_id = null;
 
     public function __construct()
     {

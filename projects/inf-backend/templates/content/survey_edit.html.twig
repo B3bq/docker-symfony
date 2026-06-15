@@ -1,12 +1,12 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Stwórz nowy Quiz/Ankietę{% endblock %}
+{% block title %}Edytuj Quiz/Ankietę{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="mb-4">Kreator Quizu (Symfony Forms)</h2>
+            <h2 class="mb-4">Edytuj Quiz (Symfony Forms)</h2>
             
             {{ form_start(form) }}
             
@@ -61,14 +61,19 @@
             <button type="button" class="btn btn-outline-primary mb-4 add-question">+ Dodaj kolejne pytanie</button>
             <hr>
             
-            <button type="submit" class="btn btn-success w-100 mb-5 py-2 fw-bold">Zapisz i udostępnij quiz</button>
+            <button type="submit" class="btn btn-success w-100 mb-5 py-2 fw-bold">Zapisz zmiany</button>
             
-            {# Render reszty (tokeny csrf) ukryty #}
             <div class="d-none">
                 {{ form_rest(form) }}
             </div>
             
             {{ form_end(form) }}
+
+            <form id="delete-survey-form" action="{{ path('survey_delete', {'id': survey.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę ankietę? Ta operacja usunie ją wraz z pytaniami i odpowiedziami.');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ survey.id) }}">
+                <button type="submit" class="btn btn-danger w-100 mb-4" style="background-color: #dc3545; border-color: #dc3545; color: #fff;">Usuń ankietę</button>
+            </form>
+
         </div>
     </div>
 </div>
@@ -101,10 +106,12 @@
 
                     const questionIndex = wrapper.dataset.questionIndex || wrapper.closest('.question-item')?.dataset.questionIndex || '0';
 
+                    // Znajdowanie inputow w prototype
                     const checkbox = protoNode.querySelector('input[type="checkbox"]');
                     const hiddenInput = checkbox ? protoNode.querySelector(`input[type="hidden"][name="${checkbox.name}"]`) : null;
                     const textInput = protoNode.querySelector('input[type="text"]');
 
+                    // dodanie klasy answer-item do wrappera odpowiedzi, jeśli nie istnieje
                     let answerItem;
                     if (protoNode.classList.contains('answer-item')) {
                         answerItem = protoNode;
@@ -114,20 +121,23 @@
                         answerItem.appendChild(protoNode);
                     }
 
+                    // schowanie checkboxa, aby nie był widoczny, ale nadal obecny w DOM
                     if (checkbox) checkbox.style.display = 'none';
 
+                    // dodanie radio buttona do wyboru poprawnej odpowiedzi
                     const radio = document.createElement('input');
                     radio.type = 'radio';
                     radio.name = `correct_answer_${questionIndex}`;
                     radio.className = 'correct-answer-radio';
                     radio.dataset.questionIndex = questionIndex;
 
+                    // dodanie labela "Poprawna" obok radio buttona
                     const textGroup = document.createElement('div');
                     textGroup.className = 'input-group-text bg-light';
                     textGroup.appendChild(radio);
                     if (hiddenInput) textGroup.appendChild(hiddenInput.cloneNode(true));
                     if (checkbox) textGroup.appendChild(checkbox);
-                    // unikanie duplikacji labela, jeśli jest przenoszony z prototypu
+                    // unikanie duplikatu labela
                     let movedLabel = null;
                     if (checkbox) {
                         movedLabel = protoNode.querySelector(`label[for="${checkbox.id}"]`);
@@ -141,8 +151,10 @@
                         textGroup.appendChild(label);
                     }
 
+                    // dodanie textGroup na początek answerItem
                     answerItem.insertBefore(textGroup, answerItem.firstChild);
 
+                    // dodanie przycisku usuwania odpowiedzi
                     const removeBtn = document.createElement('button');
                     removeBtn.type = 'button';
                     removeBtn.className = 'btn btn-outline-danger remove-answer';
@@ -150,6 +162,7 @@
                     answerItem.appendChild(removeBtn);
                     removeBtn.onclick = function() { this.closest('.answer-item').remove(); };
 
+                    // sprawdzenie, czy textInput istnieje i dodanie klasy form-control
                     if (textInput) textInput.classList.add('form-control');
 
                     wrapper.appendChild(answerItem);
@@ -159,6 +172,7 @@
 
         initElements(questionsWrapper);
 
+        // sprawdzenie i ustawienie name dla radio buttonów poprawnej odpowiedzi
         document.querySelectorAll('.answers-wrapper').forEach(wrapper => {
             const qIdx = wrapper.dataset.questionIndex || Array.from(document.querySelectorAll('.question-item')).indexOf(wrapper.closest('.question-item'));
             wrapper.querySelectorAll('input.correct-answer-radio').forEach(radio => {
@@ -219,7 +233,7 @@
     document.querySelector('form').addEventListener('submit', function(e) {
         let questionIndex = 0;
         document.querySelectorAll('.question-item').forEach((qItem) => {
-
+            // znalezienie pytania
             let contentInput = null;
             qItem.querySelectorAll('input[type="text"]').forEach(inp => {
                 if (!inp.name || !inp.name.includes('answer')) {
@@ -230,21 +244,23 @@
                 contentInput.name = `survey[questions][${questionIndex}][content]`;
             }
 
+            // naprawa nazw pól odpowiedzi
             let answerIndex = 0;
             qItem.querySelectorAll('.answer-item').forEach((aItem) => {
-               
+                // input treści odpowiedzi
                 const textInput = aItem.querySelector('input[type="text"][placeholder*="odpowiedzi"]') || 
                                  Array.from(aItem.querySelectorAll('input[type="text"]')).find(inp => inp !== contentInput);
                 if (textInput) {
                     textInput.name = `survey[questions][${questionIndex}][answers][${answerIndex}][content]`;
                 }
 
-                
+                // checkbox poprawnej odpowiedzi
                 const checkbox = aItem.querySelector('input[type="checkbox"]');
                 if (checkbox) {
                     checkbox.name = `survey[questions][${questionIndex}][answers][${answerIndex}][isCorrect]`;
                 }
 
+                // naprawa ukrytego inputa, który Symfony używa do mapowania checkboxów
                 const hiddenInput = aItem.querySelector(`input[type="hidden"][value="0"]`);
                 if (hiddenInput && hiddenInput.dataset.symfony) {
                     hiddenInput.name = `survey[questions][${questionIndex}][answers][${answerIndex}][isCorrect]`;

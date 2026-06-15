@@ -31,7 +31,7 @@ class RegistrationFormType extends AbstractType
                         message: 'Proszę podać hasło',
                     ),
                     new Length(
-                        min: 6,
+                        min: 4,
                         minMessage: 'Twoje hasło powinno mieć co najmniej {{ limit }} znaków',
                         max: 4096,
                     ),
