@@ -18,7 +18,8 @@ class SurveyCreatorController extends AbstractController
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $survey = new Survey();
-        
+        $survey->setUserId($this->getUser()->getId()); // ustawienie id użytkownika tworzącego ankietę
+
         // Inicjalizacja 3 pytań po 3 warianty odpowiedzi (tylko na starcie)
         if (!$request->isMethod('POST')) {
             for ($i = 0; $i < 3; $i++) {

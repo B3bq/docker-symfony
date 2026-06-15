@@ -32,6 +32,11 @@
                         <div class="card-footer bg-white border-top-0">
                             <a href="{{ path('survey_answer', {'id': survey.id}) }}" class="btn btn-primary w-100">Rozwiąż quiz</a>
                         </div>
+                        {% if app.user and survey.user_id == app.user.id %}
+                            <div class="card-footer bg-white border-top-0">
+                                <a href="{{ path('survey_edit', {'id': survey.id}) }}" class="btn btn-secondary w-100">Edytuj quiz</a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% else %}

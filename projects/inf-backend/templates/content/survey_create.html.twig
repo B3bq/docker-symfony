@@ -43,8 +43,8 @@
                                 {% for answerForm in questionForm.answers %}
                                     <div class="input-group mb-2 answer-item">
                                         <div class="input-group-text bg-light">
-                                            {{ form_widget(answerForm.isCorrect) }}
-                                            <label class="ms-2 mb-0" for="{{ answerForm.isCorrect.vars.id }}">Poprawna</label>
+                                            <input type="radio" name="correct_answer" class="correct-answer-radio" {% if answerForm.isCorrect.vars.data %}checked{% endif %}>
+                                            {{ form_widget(answerForm.isCorrect, {'attr': {'style': 'display: none;'}}) }}
                                         </div>
                                         {{ form_widget(answerForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Treść odpowiedzi'}}) }}
                                         <button type="button" class="btn btn-outline-danger remove-answer">X</button>
@@ -129,8 +129,6 @@
             tempDiv.innerHTML = newForm;
             const contentInput = tempDiv.querySelector('input[type="text"]');
             
-            // We need to construct nested answers prototype. 
-            // Symfony forms provides it inside the question prototype
             const answersPrototypeDiv = tempDiv.querySelector('div[data-prototype]');
             let answersPrototype = answersPrototypeDiv ? answersPrototypeDiv.dataset.prototype : '';
 
@@ -166,6 +164,18 @@
                 addAnswerBtn.click();
             }
         });
+    });
+
+    document.addEventListener('change', function (e) {
+    if (e.target.classList.contains('correct-answer-radio')) {
+        document.querySelectorAll('.correct-answer-radio').forEach((radio) => {
+            const checkbox = radio.parentElement.querySelector('input[type="checkbox"]');
+            checkbox.checked = false;
+        });
+
+        const checkbox = e.target.parentElement.querySelector('input[type="checkbox"]');
+        checkbox.checked = true;
+    }
     });
 </script>
 {% endblock %}
