@@ -6,3 +6,8 @@ fieldset.mb-3 {
     padding: 0;
     margin: 0;
 }
+.btn-danger{
+    background-color: red;
+    border: none;
+    color: white;
+}

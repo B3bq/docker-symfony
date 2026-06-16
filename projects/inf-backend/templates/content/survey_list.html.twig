@@ -20,6 +20,10 @@
                             <h5 class="mb-1">{{ survey.title }}</h5>
                             <p class="mb-1">{{ survey.description }}</p>
                             <a href="{{ path('survey_edit', {'id': survey.id}) }}" class="btn btn-secondary w-100">Edytuj quiz</a>
+                            <form id="delete-survey-form" action="{{ path('survey_delete', {'id': survey.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę ankietę? Ta operacja usunie ją wraz z pytaniami i odpowiedziami.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ survey.id) }}">
+                                <button type="submit" class="btn btn-danger w-100 mb-4">Usuń ankietę</button>
+                            </form>
                         </div>
                     {% endfor %}
                 </div>

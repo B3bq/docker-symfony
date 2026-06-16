@@ -2,6 +2,11 @@
 
 {% block title %}Edytuj Quiz/Ankietę{% endblock %}
 
+{% block navigation %}
+    <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+    <li><a href="{{ path('survey_list') }}">Moje ankiety</a></li>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -71,7 +76,7 @@
 
             <form id="delete-survey-form" action="{{ path('survey_delete', {'id': survey.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę ankietę? Ta operacja usunie ją wraz z pytaniami i odpowiedziami.');">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ survey.id) }}">
-                <button type="submit" class="btn btn-danger w-100 mb-4" style="background-color: #dc3545; border-color: #dc3545; color: #fff;">Usuń ankietę</button>
+                <button type="submit" class="btn btn-danger w-100 mb-4">Usuń ankietę</button>
             </form>
 
         </div>
