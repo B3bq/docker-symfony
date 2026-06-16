@@ -3,10 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Ankiety{% endblock %}</title> 
-        {% block stylesheets %}
-        {% endblock %}
 
         {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>

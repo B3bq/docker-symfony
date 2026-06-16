@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Moje ankiety{% endblock %}
+
+{% block navigation %}
+    <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+    <li><a href="{{ path('survey_list') }}">Moje ankiety</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Moje ankiety</h2>
+
+            {% if surveys %}
+                <div class="list-group">
+                    {% for survey in surveys %}
+                        <div class="list-group-item">
+                            <h5 class="mb-1">{{ survey.title }}</h5>
+                            <p class="mb-1">{{ survey.description }}</p>
+                            <a href="{{ path('survey_edit', {'id': survey.id}) }}" class="btn btn-secondary w-100">Edytuj quiz</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Brak dostępnych ankiet.</p>
+                <a href="{{ path('survey_create') }}" class="btn btn-primary">Utwórz nową ankietę</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

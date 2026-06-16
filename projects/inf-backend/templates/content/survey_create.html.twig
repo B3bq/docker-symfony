@@ -2,6 +2,11 @@
 
 {% block title %}Stwórz nowy Quiz/Ankietę{% endblock %}
 
+{% block navigation %}
+    <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+    <li><a href="{{ path('survey_list') }}">Moje ankiety</a></li>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
