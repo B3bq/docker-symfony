@@ -1,5 +1,5 @@
 body {
-    background-color: skyblue;
+    background-color: rgb(165, 215, 235);
 }
 fieldset.mb-3 {
     border: none !important;
@@ -10,4 +10,8 @@ fieldset.mb-3 {
     background-color: red;
     border: none;
     color: white;
+}
+.input-group-text{
+    display: flex;
+    flex-direction: row;
 }
