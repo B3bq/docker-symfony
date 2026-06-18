@@ -36,6 +36,8 @@ security:
     access_control:
         - { path: ^/survey/create, roles: ROLE_USER }
 
+        - { path: '^/adminpanel', roles: ROLE_ADMIN }
+
 when@test:
     security:
         password_hashers:

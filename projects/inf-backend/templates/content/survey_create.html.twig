@@ -5,6 +5,9 @@
 {% block navigation %}
     <li><a href="{{ path('homepage') }}">Strona główna</a></li>
     <li><a href="{{ path('survey_list') }}">Moje ankiety</a></li>
+    {% if is_granted('ROLE_ADMIN') %}
+        <li><a href="{{ path('admin_panel') }}">Panel administratora</a></li>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
