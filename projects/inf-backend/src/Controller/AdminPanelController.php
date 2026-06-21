@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Survey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,63 @@ class AdminPanelController extends AbstractController
 
         return $this->render('content/admin_panel.html.twig', [
             'users' => $users,
+        ]);
+    }
+
+    #[Route('/adminpanel/user-surveys/{id}', name: 'admin_user_surveys', methods: ['GET'])]
+    public function userSurveys(int $id, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You do not have permission to access this page.');
+        }
+
+        $surveys = $entityManager->getRepository(Survey::class)->findBy(['user_id' => $id]);
+
+        $data = array_map(function ($s) {
+            return [
+                'id' => $s->getId(),
+                'title' => $s->getTitle(),
+                'description' => $s->getDescription(),
+            ];
+        }, $surveys);
+
+        return $this->json($data);
+    }
+
+    #[Route('/adminpanel/delete/{id}', name: 'admin_delete_user', methods: ['POST'])]
+    public function deleteUser(int $id, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You do not have permission to access this page.');
+        }
+
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found.');
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin_panel');
+    }
+
+    #[Route('/adminpanel/edit/{id}', name: 'admin_edit_user', methods: ['GET', 'POST'])]
+    public function editUser(int $id, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You do not have permission to access this page.');
+        }
+
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found.');
+        }
+
+        return $this->render('content/edit_user.html.twig', [
+            'user' => $user,
         ]);
     }
 }
