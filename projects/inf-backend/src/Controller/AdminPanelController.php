@@ -14,10 +14,6 @@ class AdminPanelController extends AbstractController
     #[Route('/adminpanel', name: 'admin_panel')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('You do not have permission to access this page.');
-        }
-
         $users = $entityManager->getRepository(User::class)->findAll();
 
         return $this->render('content/admin_panel.html.twig', [
@@ -28,10 +24,6 @@ class AdminPanelController extends AbstractController
     #[Route('/adminpanel/user-surveys/{id}', name: 'admin_user_surveys', methods: ['GET'])]
     public function userSurveys(int $id, EntityManagerInterface $entityManager): Response
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('You do not have permission to access this page.');
-        }
-
         $surveys = $entityManager->getRepository(Survey::class)->findBy(['user_id' => $id]);
 
         $data = array_map(function ($s) {
@@ -45,17 +37,15 @@ class AdminPanelController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/adminpanel/delete/{id}', name: 'admin_delete_user', methods: ['POST'])]
+    #[Route('/adminpanel/delete/{id}', name: 'admin_delete_user', methods: ['GET', 'POST'])]
     public function deleteUser(int $id, EntityManagerInterface $entityManager): Response
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('You do not have permission to access this page.');
-        }
-
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
-            throw $this->createNotFoundException('User not found.');
+            return $this->render('content/not_found.html.twig', [
+                'message' => 'Nie znaleziono użytkownika o podanym ID.'
+            ]);
         }
 
         $entityManager->remove($user);
@@ -67,14 +57,12 @@ class AdminPanelController extends AbstractController
     #[Route('/adminpanel/edit/{id}', name: 'admin_edit_user', methods: ['GET', 'POST'])]
     public function editUser(int $id, EntityManagerInterface $entityManager): Response
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('You do not have permission to access this page.');
-        }
-
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
-            throw $this->createNotFoundException('User not found.');
+            return $this->render('content/not_found.html.twig', [
+                'message' => 'Nie znaleziono użytkownika o podanym ID.'
+            ]);
         }
 
         return $this->render('content/edit_user.html.twig', [
