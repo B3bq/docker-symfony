@@ -17,11 +17,13 @@ fieldset.mb-3 {
 }
 
 table > tbody > tr:hover {
-    background-color: blueviolet;
+    background-color: rgb(175, 116, 230);
+    color: whitesmoke;
 }
 
 .table-active {
     background-color: blueviolet;
+    color: whitesmoke;
 }
 
 .no-edit{
