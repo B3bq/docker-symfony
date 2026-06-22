@@ -69,4 +69,21 @@ class AdminPanelController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/adminpanel/delete-survey/{id}', name: 'admin_delete_survey', methods: ['POST'])]
+    public function deleteSurvey(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $survey = $entityManager->getRepository(Survey::class)->find($id);
+
+        if (!$survey) {
+            return $this->render('content/not_found.html.twig', [
+                'message' => 'Nie znaleziono ankiety o podanym ID.'
+            ]);
+        }
+
+        $entityManager->remove($survey);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin_panel');
+    }
 }

@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Edytuj Quiz/Ankietę{% endblock %}
+{% block title %}Podgląd Ankiety{% endblock %}
 
 {% block navigation %}
     <li><a href="{{ path('homepage') }}">Strona główna</a></li>
@@ -10,11 +10,12 @@
     {% endif %}
 {% endblock %}
 
+
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 no-edit">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="mb-4">Edytuj Quiz (Symfony Forms)</h2>
+            <h2 class="mb-4">Podgląd Ankiety</h2>
             
             {{ form_start(form) }}
             
@@ -38,7 +39,6 @@
                     <div class="card mb-4 border-primary question-item">
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <strong>Pytanie</strong>
-                            <button type="button" class="btn btn-sm btn-danger remove-question">Usuń pytanie</button>
                         </div>
                         <div class="card-body">
                             {{ form_row(questionForm.content) }}
@@ -56,31 +56,19 @@
                                             {{ form_widget(answerForm.isCorrect, {'attr': {'style': 'display: none;'}}) }}
                                         </div>
                                         {{ form_widget(answerForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Treść odpowiedzi'}}) }}
-                                        <button type="button" class="btn btn-outline-danger remove-answer">X</button>
                                     </div>
                                 {% endfor %}
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2 add-answer">+ Dodaj wariant</button>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-
-            <button type="button" class="btn btn-outline-primary mb-4 add-question">+ Dodaj kolejne pytanie</button>
-            <hr>
-            
-            <button type="submit" class="btn btn-success w-100 mb-5 py-2 fw-bold">Zapisz zmiany</button>
-            
+        
             <div class="d-none">
                 {{ form_rest(form) }}
             </div>
             
             {{ form_end(form) }}
-
-            <form id="delete-survey-form" action="{{ path('survey_delete', {'id': survey.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę ankietę? Ta operacja usunie ją wraz z pytaniami i odpowiedziami.');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ survey.id) }}">
-                <button type="submit" class="btn btn-danger w-100 mb-4">Usuń ankietę</button>
-            </form>
 
         </div>
     </div>

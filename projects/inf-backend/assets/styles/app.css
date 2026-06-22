@@ -23,3 +23,10 @@ table > tbody > tr:hover {
 .table-active {
     background-color: blueviolet;
 }
+
+.no-edit{
+    input, textarea {
+        background-color: #e9ecef;
+        pointer-events: none;
+    }
+}
