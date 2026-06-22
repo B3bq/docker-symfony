@@ -59,6 +59,11 @@ class AdminPanelController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
+        $this->addFlash(
+            'success',
+            'Użytkownik został usunięty'
+        );
+
         return $this->redirectToRoute('admin_panel');
     }
 
@@ -75,6 +80,11 @@ class AdminPanelController extends AbstractController
 
         $entityManager->remove($survey);
         $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Ankieta została usunięta'
+        );
 
         return $this->redirectToRoute('admin_panel');
     }
@@ -115,7 +125,20 @@ class AdminPanelController extends AbstractController
         $user->setRoles(array_values(array_unique($roles)));
         $entityManager->persist($user);
         $entityManager->flush();
+        
+        $this->addFlash(
+            'success',
+            'Twoje zmiany zostały zapisane'
+        );
 
-        return $this->json(['success' => true, 'roles' => $user->getRoles()]);
+        // zbieranie flasha do jsona
+        $flashes = [];
+        $session = $request->getSession();
+        if ($session) {
+            $flashBag = $session->getFlashBag()->all();
+            $flashes = $flashBag;
+        }
+
+        return $this->json(['success' => true, 'roles' => $user->getRoles(), 'flashes' => $flashes]);
     }
 }

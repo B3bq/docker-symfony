@@ -78,6 +78,19 @@ document.addEventListener('DOMContentLoaded', function(){
         function qs(selector, el=document){return el.querySelector(selector)}
         function qsa(selector, el=document){return Array.from(el.querySelectorAll(selector))}
 
+        function displayFlashes(flashes) {
+            Object.keys(flashes).forEach(function(type){
+                (flashes[type] || []).forEach(function(msg){
+                    var div = document.createElement('div');
+                    var klass = 'alert alert-' + (type === 'error' ? 'danger' : type);
+                    div.className = klass;
+                    div.innerText = msg;
+                    container.appendChild(div);
+                    setTimeout(function(){ div.remove(); }, 5000);
+                });
+            });
+        }
+
         document.querySelectorAll('.edit-roles').forEach(function(btn){
             btn.addEventListener('click', function(e){
                 var tr = e.target.closest('tr');
@@ -107,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
             if (e.target.matches('.remove-role')) {
-                var role = e.target.getAttribute('data-role');
                 var badge = e.target.closest('.role-badge');
                 if (badge) badge.remove();
             }
@@ -133,8 +145,10 @@ document.addEventListener('DOMContentLoaded', function(){
                         tr.querySelector('.role-editor').style.display='none';
                         tr.querySelector('.edit-roles').style.display='inline-block';
                         tr.querySelectorAll('.remove-role').forEach(b=>b.style.display='none');
+                        if (res.flashes) displayFlashes(res.flashes);
                     } else {
-                        alert('Błąd podczas zapisu roli');
+                        if (res.flashes) displayFlashes(res.flashes);
+                        else alert('Błąd podczas zapisu roli');
                     }
                 }).catch(function(){ alert('Błąd sieci'); });
             }

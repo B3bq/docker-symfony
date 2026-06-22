@@ -32,3 +32,8 @@ table > tbody > tr:hover {
         pointer-events: none;
     }
 }
+
+.alert{
+    background-color: yellow;
+    color: red;
+}
