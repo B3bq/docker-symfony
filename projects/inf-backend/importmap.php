@@ -16,4 +16,8 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+    'survey_list' => [
+        'path' => './assets/survey_list.js',
+        'entrypoint' => true,
+    ],
 ];

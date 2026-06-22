@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block navigation %}
+    {% if app.user %}
+        <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+        <li><a href="{{ path('survey_list') }}">Moje ankiety</a></li>
+        <li><a href="{{ path('app_logout') }}">Wyloguj się ({{ app.user.email }})</a></li>
+    {% else %}
+        <li><a href="{{ path('homepage') }}">Strona główna</a></li>
+        <li><a href="{{ path('signin') }}">Zaloguj się</a></li>
+        <li><a href="{{ path('signup') }}">Zarejestruj się</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Brak dostępu</h1>
+    <p>{{ message }}</p>
+{% endblock %}

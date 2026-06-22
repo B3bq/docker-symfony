@@ -32,6 +32,9 @@ class SignupController extends AbstractController
                 )
             );
 
+            // przypisanie roli użytkownika, ROLE_USER jest domyślną rolą dla nowych użytkowników
+            $user->setRoles(['ROLE_USER']);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
