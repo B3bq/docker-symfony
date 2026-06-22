@@ -71,3 +71,81 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', function(){
+    (function(){
+        function qs(selector, el=document){return el.querySelector(selector)}
+        function qsa(selector, el=document){return Array.from(el.querySelectorAll(selector))}
+
+        document.querySelectorAll('.edit-roles').forEach(function(btn){
+            btn.addEventListener('click', function(e){
+                var tr = e.target.closest('tr');
+                tr.querySelector('.role-editor').style.display = 'block';
+                tr.querySelectorAll('.remove-role').forEach(b=>b.style.display='inline-block');
+                btn.style.display = 'none';
+            });
+        });
+
+        document.addEventListener('click', function(e){
+            if (e.target.matches('.add-role')) {
+                var tr = e.target.closest('tr');
+                var select = tr.querySelector('.role-select');
+                var val = select.value;
+                if (!val) return;
+                var rolesList = tr.querySelector('.roles-list');
+                if (rolesList.querySelector('[data-role="'+val+'"]')) return;
+                var span = document.createElement('span');
+                span.className = 'badge bg-success me-1 role-badge';
+                span.setAttribute('data-role', val);
+                span.innerText = val + ' ';
+                var btn = document.createElement('button');
+                btn.type='button'; btn.className='btn-close remove-role ms-2'; btn.setAttribute('aria-label','Usuń'); btn.style.display='inline-block'; btn.setAttribute('data-role', val);
+                btn.textContent = 'X';
+                span.appendChild(btn);
+                rolesList.appendChild(span);
+            }
+
+            if (e.target.matches('.remove-role')) {
+                var role = e.target.getAttribute('data-role');
+                var badge = e.target.closest('.role-badge');
+                if (badge) badge.remove();
+            }
+
+            if (e.target.matches('.confirm-roles')) {
+                var tr = e.target.closest('tr');
+                var updateUrl = tr.getAttribute('data-update-url');
+                var badges = tr.querySelectorAll('.role-badge');
+                var roles = [];
+                badges.forEach(function(b){ roles.push(b.getAttribute('data-role')); });
+
+                if (!updateUrl) {
+                    console.error('No update URL on row');
+                    return;
+                }
+
+                fetch(updateUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({roles: roles})
+                }).then(r=>r.json()).then(function(res){
+                    if (res.success) {
+                        tr.querySelector('.role-editor').style.display='none';
+                        tr.querySelector('.edit-roles').style.display='inline-block';
+                        tr.querySelectorAll('.remove-role').forEach(b=>b.style.display='none');
+                    } else {
+                        alert('Błąd podczas zapisu roli');
+                    }
+                }).catch(function(){ alert('Błąd sieci'); });
+            }
+
+            if (e.target.matches('.cancel-edit')) {
+                var tr = e.target.closest('tr');
+                tr.querySelector('.role-editor').style.display='none';
+                tr.querySelector('.edit-roles').style.display='inline-block';
+                tr.querySelectorAll('.remove-role').forEach(b=>b.style.display='none');
+                window.location.reload();
+            }
+        });
+    })();
+});

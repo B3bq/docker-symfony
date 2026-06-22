@@ -41,23 +41,44 @@
                                     <th>Akcje</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for user in users %}
-                                    <tr class="trs" data-user-id="{{ user.id }}" style="cursor: pointer;">
-                                        <td>{{ loop.index }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.roles|join(', ') }}</td>
-                                        <td>
-                                            <a href="{{ path('admin_edit_user', {'id': user.id}) }}" class="btn btn-sm btn-primary">
-                                                <button class="btn btn-sm btn-primary">Edytuj role</button>
-                                            </a>
-                                            <a href="{{ path('admin_delete_user', {'id': user.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
-                                                <button class="btn btn-sm btn-danger">Usuń konto</button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr class="trs" data-user-id="{{ user.id }}" data-update-url="{{ path('admin_update_user_roles', {'id': user.id}) }}">
+                                                <td>{{ loop.index }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td class="user-roles" data-user-id="{{ user.id }}">
+                                                    <div class="roles-list">
+                                                                        {% for role in user.roles %}
+                                                                            <span class="badge bg-secondary me-1 role-badge" data-role="{{ role }}">{{ role }}
+                                                                                {% if role != 'ROLE_USER' %}
+                                                                                    <button type="button" class="btn-close remove-role ms-2" aria-label="Usuń" style="display:none;" data-role="{{ role }}">X</button>
+                                                                                {% endif %}
+                                                                            </span>
+                                                                        {% endfor %}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary edit-roles" data-user-id="{{ user.id }}">Edytuj role</button>
+                                                    <a href="{{ path('admin_delete_user', {'id': user.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
+                                                        Usuń konto
+                                                    </a>
+                                                    <div class="role-editor mt-2" style="display:none;">
+                                                        <div class="input-group input-group-sm">
+                                                            <select class="form-select role-select">
+                                                                <option value="">Wybierz rolę...</option>
+                                                                {% for r in available_roles %}
+                                                                    <option value="{{ r }}">{{ r }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <button class="btn btn-sm btn-success add-role" type="button">Dodaj rolę</button>
+                                                            <button class="btn btn-sm btn-primary confirm-roles ms-2" type="button">Zatwierdź</button>
+                                                            <button class="btn btn-sm btn-secondary cancel-edit ms-2" type="button">Anuluj</button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
                         </table>
                     {% endif %}
                 </div>

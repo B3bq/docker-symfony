@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Survey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,8 +17,15 @@ class AdminPanelController extends AbstractController
     {
         $users = $entityManager->getRepository(User::class)->findAll();
 
+        $availableRoles = [
+            'ROLE_VIEWER',
+            'ROLE_USER',
+            'ROLE_ADMIN'
+        ];
+
         return $this->render('content/admin_panel.html.twig', [
             'users' => $users,
+            'available_roles' => $availableRoles,
         ]);
     }
 
@@ -54,22 +62,6 @@ class AdminPanelController extends AbstractController
         return $this->redirectToRoute('admin_panel');
     }
 
-    #[Route('/adminpanel/edit/{id}', name: 'admin_edit_user', methods: ['GET', 'POST'])]
-    public function editUser(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $user = $entityManager->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            return $this->render('content/not_found.html.twig', [
-                'message' => 'Nie znaleziono użytkownika o podanym ID.'
-            ]);
-        }
-
-        return $this->render('content/edit_user.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
     #[Route('/adminpanel/delete-survey/{id}', name: 'admin_delete_survey', methods: ['POST'])]
     public function deleteSurvey(int $id, EntityManagerInterface $entityManager): Response
     {
@@ -85,5 +77,45 @@ class AdminPanelController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('admin_panel');
+    }
+
+    #[Route('/adminpanel/update-roles/{id}', name: 'admin_update_user_roles', methods: ['POST'])]
+    public function updateUserRoles(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json(['error' => 'Użytkownik nie istnieje.'], 404);
+        }
+
+        $content = $request->getContent();
+        $data = [];
+
+        if ($content) {
+            $decoded = json_decode($content, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data = $decoded;
+            }
+        }
+
+        if (empty($data)) {
+            $data = $request->request->all();
+        }
+
+        $roles = [];
+        if (isset($data['roles']) && is_array($data['roles'])) {
+            $roles = $data['roles'];
+        }
+
+        // pewnosc, ze zawsze jest prezentowane ROLE_UESR
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        $user->setRoles(array_values(array_unique($roles)));
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(['success' => true, 'roles' => $user->getRoles()]);
     }
 }
