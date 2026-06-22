@@ -35,13 +35,24 @@ security:
             access_denied_handler: App\Security\AccessDeniedHandler
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
+        ROLE_ROOT: [ ROLE_ADMIN ]
+        ROLE_ADMIN: [ ROLE_USER ]
+        ROLE_USER: [ ROLE_VIEWER ]
 
     # Note: Only the *first* matching rule is applied
     access_control:
+        # tworzenie i własne operacje
         - { path: ^/survey/create, roles: ROLE_USER }
+        - { path: ^/survey/.*/edit, roles: ROLE_USER }
+        - { path: ^/survey/.*/delete, roles: ROLE_USER }
 
-        - { path: '^/adminpanel', roles: ROLE_ADMIN }
+        # admin
+        - { path: ^/adminpanel/update-roles, roles: ROLE_ADMIN }
+        - { path: ^/adminpanel/delete, roles: ROLE_ADMIN }
+        - { path: '^/adminpanel$', roles: ROLE_ADMIN }
+
+        # tylko superadmin
+        - { path: ^/adminpanel/delete-survey, roles: ROLE_ROOT }
 
 when@test:
     security:

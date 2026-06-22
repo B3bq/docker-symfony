@@ -15,11 +15,6 @@ class PreviewSurveyController extends AbstractController
     #[Route('/survey/{id}/preview', name: 'survey_preview')]
     public function preview(Survey $survey, Request $request, EntityManagerInterface $em): Response
     {
-        // Sprawdzenie, czy aktualny użytkownik jest właścicielem ankiety
-        if ($survey->getUserId() !== $this->getUser()->getId()) {
-            throw $this->createAccessDeniedException('Nie masz uprawnień do podglądu tej ankiety.');
-        }
-
         $form = $this->createForm(SurveyType::class, $survey);
         $form->handleRequest($request);
 

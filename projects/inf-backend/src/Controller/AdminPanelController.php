@@ -18,9 +18,8 @@ class AdminPanelController extends AbstractController
         $users = $entityManager->getRepository(User::class)->findAll();
 
         $availableRoles = [
-            'ROLE_VIEWER',
-            'ROLE_USER',
-            'ROLE_ADMIN'
+            'ROLE_ADMIN',
+            'ROLE_ROOT',
         ];
 
         return $this->render('content/admin_panel.html.twig', [
@@ -45,6 +44,28 @@ class AdminPanelController extends AbstractController
         return $this->json($data);
     }
 
+    #[Route('/adminpanel/delete-survey/{id}', name: 'admin_delete_survey', methods: ['POST'])]
+    public function deleteSurvey(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $survey = $entityManager->getRepository(Survey::class)->find($id);
+
+        if (!$survey) {
+            return $this->render('content/not_found.html.twig', [
+                'message' => 'Nie znaleziono ankiety o podanym ID.'
+            ]);
+        }
+
+        $entityManager->remove($survey);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Ankieta została usunięta'
+        );
+
+        return $this->redirectToRoute('admin_panel');
+    }
+
     #[Route('/adminpanel/delete/{id}', name: 'admin_delete_user', methods: ['GET', 'POST'])]
     public function deleteUser(int $id, EntityManagerInterface $entityManager): Response
     {
@@ -67,27 +88,6 @@ class AdminPanelController extends AbstractController
         return $this->redirectToRoute('admin_panel');
     }
 
-    #[Route('/adminpanel/delete-survey/{id}', name: 'admin_delete_survey', methods: ['POST'])]
-    public function deleteSurvey(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $survey = $entityManager->getRepository(Survey::class)->find($id);
-
-        if (!$survey) {
-            return $this->render('content/not_found.html.twig', [
-                'message' => 'Nie znaleziono ankiety o podanym ID.'
-            ]);
-        }
-
-        $entityManager->remove($survey);
-        $entityManager->flush();
-
-        $this->addFlash(
-            'success',
-            'Ankieta została usunięta'
-        );
-
-        return $this->redirectToRoute('admin_panel');
-    }
 
     #[Route('/adminpanel/update-roles/{id}', name: 'admin_update_user_roles', methods: ['POST'])]
     public function updateUserRoles(int $id, Request $request, EntityManagerInterface $entityManager): Response

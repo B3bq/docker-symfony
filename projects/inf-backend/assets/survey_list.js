@@ -55,9 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <a href="/survey/${s.id}/preview" class="btn btn-sm btn-primary me-2">
                                             <button>Podejrzyj</button>
                                         </a>
+                                        ${window.IS_SUPER_ADMIN ? `
                                         <form action="/adminpanel/delete-survey/${s.id}" method="post" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz usunąć tę ankietę? Ta operacja usunie ją wraz z pytaniami i odpowiedziami.');">
                                             <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
                                         </form>
+                                        ` : ''}
                                     </td>
                                 </tr>
                             `).join('')}
@@ -79,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function(){
         function qsa(selector, el=document){return Array.from(el.querySelectorAll(selector))}
 
         function displayFlashes(flashes) {
+            if (!flashes) return;
+            var container = document.getElementById('flash-messages');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'flash-messages';
+                document.body.insertBefore(container, document.body.firstChild);
+            }
+
             Object.keys(flashes).forEach(function(type){
                 (flashes[type] || []).forEach(function(msg){
                     var div = document.createElement('div');
